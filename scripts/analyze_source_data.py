@@ -7,44 +7,36 @@ import traceback
 import xlsxwriter
 import argparse
 import logging
-import time
 import os
-
-
-def check_folder(p):
-    if not os.path.exists(p):
-        os.makedirs(p)
-    return p
+from helpers.functions import check_folder, get_timestamp
 
 
 class AnalyzeDelimitedSourceData():
     def __init__(self):
+        self.timestamp = get_timestamp()
         self.parser = argparse.ArgumentParser(
             description='Analyze Delimited Source Data Standalone CLI')
         self.parser.add_argument(
             '--max', help="Estimated highest number of values in any controlled list (e.g. 50 locations, 5 itypes). Default 100.", action="store", default=100)
         self.parser.add_argument(
             'data_file_path', help="The csv or tsv file to be analyzed. If csv, all rows must have the same number. of columns", action="store")
-        self.parser.add_argument('results_folder',
-                                 action="store", help="Folder where you want the output to be saved.")
         self.args = self.parser.parse_args()
         self.arg_dict = self.args.__dict__
         self.data_file_path = self.arg_dict["data_file_path"]
         self.data_file_name = os.path.basename(self.data_file_path)
-        self.results_folder = self.arg_dict["results_folder"]
         self.format = os.path.splitext(self.data_file_name)[-1]
         self.estimated_max_controlled = int(
             self.arg_dict["max"])
         setup_logging(
-            "", check_folder(".logs"), time.strftime("%Y%m%d-%H%M%S")
+            "", check_folder(
+                "prep_output/analyze_source_data/logs"), self.timestamp
         )
         logging.info("Let's get started!")
 
         # Create a new folder to save the resulting files in
-        self.new_folder = check_folder(os.path.join(
-            self.results_folder, time.strftime(
-                f"{self.data_file_name}_%Y%m%d-%H%M%S")
-        ))
+        self.new_folder = check_folder(check_folder(
+            f"prep_output/analyze_source_data/results/{self.timestamp}")
+        )
 
         # Create a markdown file
         self.mdFile = MdUtils(

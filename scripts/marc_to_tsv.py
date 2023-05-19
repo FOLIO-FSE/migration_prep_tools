@@ -2,14 +2,14 @@ import csv
 import logging
 import argparse
 import pandas
-import os
-import time
 from pymarc import MARCReader
 from helpers.tool_logging import setup_logging
+from helpers.functions import check_folder, get_timestamp
 
 
 class MARCToTSV():
     def __init__(self):
+        self.timestamp = get_timestamp()
         self.parser = argparse.ArgumentParser(
             description='MARC to TSV Standalone CLI')
         self.parser.add_argument(
@@ -20,20 +20,18 @@ class MARCToTSV():
                                  help="A list-like string of fields: '001,004,852'", action="store")
         self.parser.add_argument(
             'mrc_source', help="Path to MRC file", action="store")
-        self.parser.add_argument(
-            'tsv_dest', help="TSV Destination", action="store")
         self.args = self.parser.parse_args()
         self.arg_dict = self.args.__dict__
         self.source_file_path = self.arg_dict["mrc_source"]
-        self.save_to_file = self.arg_dict["tsv_dest"]
+        self.save_to_file = check_folder(
+            f"prep_output/marc_to_tsv/results/{self.timestamp}.tsv")
         self.key_field = self.arg_dict["key_field"]
         self.marc_fields = self.arg_dict["marc_fields"]
         self.skip_null_rows = self.arg_dict["skip_null_rows"]
         setup_logging(
-            "", os.path.dirname(
-                self.save_to_file), time.strftime("%Y%m%d-%H%M%S")
+            "", check_folder(
+                "prep_output/marc_to_tsv/logs"), self.timestamp
         )
-        self.dest = ""
 
     def do_work(self):
         with open(self.source_file_path, "rb") as marc_file:
