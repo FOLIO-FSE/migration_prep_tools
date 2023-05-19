@@ -23,20 +23,19 @@ class AnalyzeDelimitedSourceData():
         self.args = self.parser.parse_args()
         self.arg_dict = self.args.__dict__
         self.data_file_path = self.arg_dict["data_file_path"]
-        self.data_file_name = os.path.basename(self.data_file_path)
-        self.format = os.path.splitext(self.data_file_name)[-1]
+        self.data_file_name, self.format = os.path.splitext(
+            os.path.basename(self.data_file_path))
         self.estimated_max_controlled = int(
             self.arg_dict["max"])
+        self.new_folder = check_folder(check_folder(
+            f"prep_output/analyze_source_data/{self.timestamp}")
+        )
         setup_logging(
-            "", check_folder(
-                "prep_output/analyze_source_data/logs"), self.timestamp
+            "", self.new_folder, self.timestamp
         )
         logging.info("Let's get started!")
 
         # Create a new folder to save the resulting files in
-        self.new_folder = check_folder(check_folder(
-            f"prep_output/analyze_source_data/results/{self.timestamp}")
-        )
 
         # Create a markdown file
         self.mdFile = MdUtils(

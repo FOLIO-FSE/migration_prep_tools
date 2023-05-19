@@ -161,6 +161,7 @@ cython_debug/
 
 output
 logs
+prep_output
 anon_config.json
 settings.json
 source_data

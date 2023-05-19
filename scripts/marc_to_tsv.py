@@ -2,6 +2,7 @@ import csv
 import logging
 import argparse
 import pandas
+import os
 from pymarc import MARCReader
 from helpers.tool_logging import setup_logging
 from helpers.functions import check_folder, get_timestamp
@@ -23,14 +24,15 @@ class MARCToTSV():
         self.args = self.parser.parse_args()
         self.arg_dict = self.args.__dict__
         self.source_file_path = self.arg_dict["mrc_source"]
-        self.save_to_file = check_folder(
-            f"prep_output/marc_to_tsv/results/{self.timestamp}.tsv")
         self.key_field = self.arg_dict["key_field"]
+        self.new_folder = check_folder(
+            f"prep_output/marc_to_tsv/{self.timestamp}")
+        self.save_to_file = os.path.join(
+            self.new_folder, f"{self.key_field}_results.tsv")
         self.marc_fields = self.arg_dict["marc_fields"]
         self.skip_null_rows = self.arg_dict["skip_null_rows"]
         setup_logging(
-            "", check_folder(
-                "prep_output/marc_to_tsv/logs"), self.timestamp
+            "", self.new_folder, self.timestamp
         )
 
     def do_work(self):
@@ -38,7 +40,7 @@ class MARCToTSV():
             reader = MARCReader(marc_file, "rb", permissive=True)
             list_of_records = []
             invalid_records = 0
-            records_wuithout_main_field = 0
+            records_without_main_field = 0
 
             for r_i, record in enumerate(reader):
                 record_number = r_i + 1
@@ -62,7 +64,7 @@ class MARCToTSV():
 
                     else:
                         if self.skip_null_rows == True and not main_field_occurences:
-                            records_wuithout_main_field += 1
+                            records_without_main_field += 1
                         else:
                             for i, main_field in enumerate(main_field_occurences):
                                 record_dict = {}
@@ -90,7 +92,7 @@ class MARCToTSV():
             logging.info(
                 f"Invalid records (failed to read): {invalid_records}")
             logging.info(
-                f"Records with no {main_field_tag}: {records_wuithout_main_field}")
+                f"Records with no {main_field_tag}: {records_without_main_field}")
             logging.info(f"Rows created: {len(field_df)}")
             logging.info("\n\n")
             logging.info(field_df.head())
