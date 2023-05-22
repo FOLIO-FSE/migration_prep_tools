@@ -26,8 +26,19 @@ List of available providers: https://faker.readthedocs.io/en/stable/providers.ht
 }
 ```
 
-## Run script
+## Running
 
-Optional: include `--locale` to create locale-appropriate fake data.
+```bash
+usage: anonymize_data.py [-h] [--locale LOCALE] [--generate-config | --no-generate-config] src_data
 
-`python scripts/anonymize_data.py --locale es_MX "source_data/Patron Records December 2022.tsv"`
+Anonymize Delimited Data
+
+positional arguments:
+  src_data              Path to delimited data
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --locale LOCALE       Locale for provider
+  --generate-config, --no-generate-config
+                        Generate anon_config.json
+```

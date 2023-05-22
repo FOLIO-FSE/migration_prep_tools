@@ -22,6 +22,13 @@ This repo is a slimmed down and curated version of https://github.com/FOLIO-FSE/
 
 `python -m pip install -r requirements.txt`
 
+## Running
+
+The scripts can be copied to a different folder as long as:
+
+1. `requirements.txt` are installed at that location (recommended in a `venv`)
+2. Both the `*.py` file and `helpers` folder are copied.
+
 ## Developing
 
 **Each standalone script should have its own help text defined by argparse.**
@@ -31,3 +38,7 @@ This repo is a slimmed down and curated version of https://github.com/FOLIO-FSE/
 **Add any new packages to requirements.txt**
 
 `python -m pip freeze > requirements.txt`
+
+**Add AT LEAST the arg parse help text to scripts/READMEs**
+
+https://github.com/FOLIO-FSE/migration_prep_tools/blob/add-scripts/scripts/READMEs/analyze_source_data.md
