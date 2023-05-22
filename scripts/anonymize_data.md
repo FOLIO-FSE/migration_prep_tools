@@ -10,11 +10,18 @@ List of available providers: https://faker.readthedocs.io/en/stable/providers.ht
 ```json
 {
   "config": {
-    "PATRN NAME": "name",
-    "ADDRESS": "address",
-    "ADDRESS2": "address",
-    "TELEPHONE": "phone_number",
-    "TELEPHONE2": "phone_number"
+    "Card": {},
+    "Title": { "provider": "prefix_nonbinary" },
+    "Name": { "provider": "last_name" },
+    "First name": { "provider": "first_name" },
+    "Email": { "provider": "email", "params": { "domain": "fake-whu.edu" } },
+    "Date of birth": {
+      "provider": "date_of_birth",
+      "params": { "minimum_age": 18, "maximum_age": 25 }
+    },
+    "Category": {},
+    "Library": {},
+    "Note": {}
   }
 }
 ```

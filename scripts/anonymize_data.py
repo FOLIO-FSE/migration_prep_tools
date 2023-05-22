@@ -8,13 +8,14 @@ from datetime import date, datetime
 from helpers.percent_tracker import PercentTracker
 from helpers.functions import check_folder, get_timestamp
 from helpers.tool_logging import setup_logging
-from pprint import pprint
 
 providers = [
     {"provider": "address"},
     {"provider": "barcode"},
     {"provider": "credit_card"},
     {"provider": "name"},
+    {"provider": "first_name"},
+    {"provider": "last_name"},
     {"provider": "date_of_birth", "params": {
         "minimum_age": 18, "maximum_age": 75}},
     {"provider": "date_this_century"},
@@ -57,7 +58,7 @@ class AnonymizeData():
     def generate_config(self):
 
         json_obj = {"config": {
-            k: "" for k in self.source_rows[0].keys()}, "available_providers": providers, "documentation": "https://faker.readthedocs.io/en/stable/providers.html"}
+            k: {} for k in self.source_rows[0].keys()}, "available_providers": providers, "documentation": "https://faker.readthedocs.io/en/stable/providers.html"}
         with open(self.config_path, mode='w', encoding="utf-8") as openfile:
             json.dump(json_obj, openfile)
         print()
