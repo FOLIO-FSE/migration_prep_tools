@@ -28,7 +28,7 @@ class MARCToTSV():
         self.new_folder = check_folder(
             f"prep_output/marc_to_tsv/{self.timestamp}")
         self.save_to_file = os.path.join(
-            self.new_folder, f"{self.key_field}_results.tsv")
+            self.new_folder, f"{self.key_field}_results_{self.timestamp}.tsv")
         self.marc_fields = self.arg_dict["marc_fields"]
         self.skip_null_rows = self.arg_dict["skip_null_rows"]
         setup_logging(
@@ -50,7 +50,6 @@ class MARCToTSV():
                 marc_fields = []
                 if self.marc_fields:
                     marc_fields = self.marc_fields.split(",")
-
                 try:
                     main_field_occurences = record.get_fields(main_field_tag)
                     if self.skip_null_rows == False and not main_field_occurences:
