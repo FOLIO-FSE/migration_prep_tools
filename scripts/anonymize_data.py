@@ -2,6 +2,8 @@ from faker import Faker
 import csv
 import os
 import json
+from pprint import pprint
+import pandas
 import argparse
 import logging
 from datetime import date, datetime
@@ -44,6 +46,7 @@ class AnonymizeData():
         self.src_data = self.arg_dict["src_data"]
         self.locale = self.arg_dict["locale"]
         self.fake_factory = Faker([self.locale] if self.locale else "en-US")
+        self.us_factory = Faker("en_US")
         self.delimiter = "\t" if os.path.splitext(
             self.arg_dict["src_data"])[1] == ".tsv" else ","
         self.source_rows = self.returnSourceData(self.src_data)
@@ -54,6 +57,9 @@ class AnonymizeData():
         self.new_folder = check_folder(
             f"prep_output/anonymize_data/{self.fn}")
         self.config_path = os.path.join(self.new_folder, "anon_config.json")
+        if os.path.exists(self.config_path):
+            with open(self.config_path, mode="r", encoding='utf-8') as jsonfile:
+                self.config_data = json.load(jsonfile)
 
     def generate_config(self):
 
@@ -77,20 +83,18 @@ class AnonymizeData():
 
     def returnAnonData(self):
         anon_row = {}
-        us_factory = Faker("en_US")
         if not os.path.exists(self.config_path):
             e = FileExistsError(
                 f"anon_config.json does not exist in {self.new_folder}.")
             logging.error(e)
             raise e
-        with open(self.config_path, mode="r", encoding='utf-8') as jsonfile:
-            config_data = json.load(jsonfile)
-        for key, value in config_data["config"].items():
+
+        for key, value in self.config_data["config"].items():
             if value:
                 provider = value["provider"]
                 valFunc = getattr(self.fake_factory, provider, None)
-                if not valFunc and getattr(us_factory, provider, None):
-                    valFunc = getattr(us_factory, provider, None)
+                if not valFunc and getattr(self.us_factory, provider, None):
+                    valFunc = getattr(self.us_factory, provider, None)
                 params = value["params"] if "params" in value else {}
                 try:
                     row_value = valFunc(**params)
