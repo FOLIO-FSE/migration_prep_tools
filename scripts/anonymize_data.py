@@ -92,6 +92,7 @@ class AnonymizeData():
                 if not valFunc and getattr(us_factory, provider, None):
                     valFunc = getattr(us_factory, provider, None)
                 params = value["params"] if "params" in value else {}
+                print(key, valFunc, params)
                 row_value = valFunc(**params)
                 if type(row_value) == date:
                     row_value = datetime.strftime(row_value, "%Y-%m-%d")
