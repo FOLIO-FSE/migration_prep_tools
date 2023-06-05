@@ -2,12 +2,9 @@ from faker import Faker
 import csv
 import os
 import json
-from pprint import pprint
-import pandas
 import argparse
 import logging
 from datetime import date, datetime
-from helpers.percent_tracker import PercentTracker
 from helpers.functions import check_folder, get_timestamp
 from helpers.tool_logging import setup_logging
 
@@ -31,7 +28,6 @@ providers = [
 class AnonymizeData():
     def __init__(self):
         self.timestamp = get_timestamp()
-        self.percent_tracker = PercentTracker(step=100)
         self.parser = argparse.ArgumentParser(
             description='Anonymize Delimited Data')
 
@@ -109,11 +105,7 @@ class AnonymizeData():
         uniq_vals = {k: {} for k in self.anon_keys}
         print()
         print("Generating fake data for each unique PII")
-        self.percent_tracker.amount = len(self.source_rows)
         for row in self.source_rows:
-            message = self.percent_tracker.print_message()
-            if (message):
-                logging.info(message)
             anon_row = self.returnAnonData()
             for key in self.anon_keys:
                 if row[key]:
