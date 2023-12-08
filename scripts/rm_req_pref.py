@@ -21,7 +21,7 @@ class RmReqPref:
 
     def run(self):
         with open(self.source, mode="r", encoding="utf-8") as openJson:
-            lines = [json.loads(line) for line in openJson.readLines()]
+            lines = [json.loads(line) for line in openJson.readlines()]
         new_lines = []
         for line in lines:
             new_line = {k: v for k, v in line.items() if k != "requestPreference"}
