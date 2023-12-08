@@ -7,8 +7,7 @@ import os
 class RmKey:
     def __init__(self):
         self.timestamp = get_timestamp()
-        self.parser = argparse.ArgumentParser(description="Generate Fake Data")
-
+        self.parser = argparse.ArgumentParser(description="Removes key from newline delimited JSON files")
         self.parser.add_argument("src_file", help="Path to source file", action="store")
         self.parser.add_argument("dest_file", help="Path to dest file", action="store")
         self.parser.add_argument("key", help="Key to remove from objects", action="store")
