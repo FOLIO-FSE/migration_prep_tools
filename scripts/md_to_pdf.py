@@ -10,7 +10,7 @@ import sys
 
 def convert_md(config_file):
     timestamp = datetime.strftime(datetime.now(), "%Y%m%d")
-    with open("config.json", mode="r", encoding="utf-8") as openjson:
+    with open(config_file, mode="r", encoding="utf-8") as openjson:
         config = json.load(openjson)
     email = config["email"]
     base_path = config["base_path"]
