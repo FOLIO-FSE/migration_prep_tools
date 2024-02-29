@@ -1,0 +1,27 @@
+{
+    "email": "kpowell1@ebsco.com",
+    "client_name":"Big University Library",
+    "iteration":"iteration_0",
+    "base_path":"path/to/migration_folder",
+    "files":{
+        "all_md_files": false,
+        "targeted_files": [
+            "transform_users.md"
+        ]
+    },
+    "tagsToDelete":[
+        "p"
+    ],
+    "styling":{
+        "header-spacing": 7,
+        "margin-top":"2cm",
+        "header-left": "{iteration}",
+        "header-center":"[section] ({client_name})",
+        "header-right":"[page]/[toPage]",
+        "header-line": true,
+        "footer-center":"EBSCO Information Services | {email} | [isodate]",
+        "footer-spacing":3,
+        "footer-font-size":8,
+        "header-font-size":10
+    }
+}
