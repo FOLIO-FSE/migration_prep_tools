@@ -3,10 +3,15 @@ import markdown
 import pdfkit
 from lxml import etree
 from datetime import datetime
+from pprint import pprint
 import re
 import json
 import sys
 
+def get_abs_path(rel_path):
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(dirname, rel_path)
+    return filename
 
 def convert_md(config_file):
     timestamp = datetime.strftime(datetime.now(), "%Y%m%d")
@@ -17,14 +22,21 @@ def convert_md(config_file):
     tagsToDelete = config["tagsToDelete"]
     client_name = config["client_name"]
     iteration = config["iteration"]
+    domain = config["domain"]
     reports_folder = f"{base_path}/iterations/{iteration}/reports"
     files_config = config["files"]
     styling = config["styling"]
+    replacements = [
+        "client_name", "email", "iteration"
+    ]
     for key, value in styling.items():
-        new_value = value.replace("{client_name}", client_name)
-        new_value = value.replace("{email}", email)
-        styling[key] = new_value
-    new_folder = os.path.join(base_path, "pdf_versions", iteration)
+        if type(value) == str:
+            for r in replacements:
+                value = value.replace(
+                    f"[{r}]", config[r]
+                )
+        styling[key] = value
+    new_folder = os.path.join(reports_folder, "pdf_versions", iteration)
     if not os.path.exists(new_folder):
         os.makedirs(new_folder)
     if files_config["all_md_files"]:
@@ -50,6 +62,7 @@ def convert_md(config_file):
         new_fp = os.path.join(new_folder, f"{timestamp}_{fn}")
         new_fp = new_fp.replace("_transform", "_01_transform")
         new_fp = new_fp.replace("_post", "_02_post")
+        new_fp = new_fp.replace("report_", f"{domain}_")
         text = replace_tags(text, ["details", "summary", "b", "string"])
         html = markdown.markdown(text, extensions=["tables"])
         html_tree = etree.ElementTree(etree.fromstring(f"<html>{html}</html>"))
@@ -59,12 +72,12 @@ def convert_md(config_file):
                 parent = t.getparent()
                 parent.remove(t)
         html_string = etree.tostring(html_tree).decode("utf-8")
-        print(os.path.basename(new_fp))
+        print(os.path.relpath(new_fp))
         pdfkit.from_string(
             html_string,
             new_fp,
             options=styling,
-            css="helpers/report.css",
+            css=get_abs_path("helpers/report.css")
         )
     for f in md_files:
         generate_pdf(f)
@@ -74,4 +87,5 @@ if __name__ == "__main__":
     config_path = sys.argv[-1]
     if not os.path.exists(config_path):
         raise FileNotFoundError(f"Cannot find {config_path}")
+    print()
     convert_md(config_path)

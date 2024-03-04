@@ -2,6 +2,7 @@
     "email": "kpowell1@ebsco.com",
     "client_name":"Big University Library",
     "iteration":"iteration_0",
+    "domain": "biglib",
     "base_path":"path/to/migration_folder",
     "files":{
         "all_md_files": false,

@@ -1,5 +1,7 @@
 ## Installation
 
+- [Install wkhtmltopdf](https://wkhtmltopdf.org/)
+
 ```bash
 % python -m venv .venv
 % source .venv/bin/activate
