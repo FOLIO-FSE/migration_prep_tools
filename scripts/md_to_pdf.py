@@ -43,6 +43,10 @@ def convert_md(config_file):
         md_files = [
             f.path for f in os.scandir(reports_folder) if f.name.endswith("md")
         ]
+    else:
+        md_files = [
+            os.path.join(config["base_path"], f) for f in files_config["targeted_files"]
+        ]
 
     def replace_tags(text, tags):
         for tag in tags:
