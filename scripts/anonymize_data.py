@@ -90,6 +90,10 @@ class AnonymizeData():
             raise e
 
         for key, value in self.config_data["config"].items():
+            cached_values = {
+                "email":None,
+                "barcode":None
+            }
             if value:
                 provider = value["provider"]
                 valFunc = getattr(self.fake_factory, provider, None)
@@ -97,7 +101,14 @@ class AnonymizeData():
                     valFunc = getattr(self.us_factory, provider, None)
                 params = value["params"] if "params" in value else {}
                 try:
-                    row_value = valFunc(**params)
+                    if provider in cached_values:
+                        if cached_values[provider]:
+                            row_value = cached_values[provider]
+                        else:
+                            row_value = valFunc(**params)
+                            cached_values[provider] = row_value
+                    else:
+                        row_value = valFunc(**params)
                 except TypeError:
                     raise Exception(f"{provider} does not exist as a provider")
                 if type(row_value) == date:
